@@ -26,7 +26,7 @@
             </tr>
         </tbody>
     </table>
-    <a class="btn-danger btn" href="{{ url('question/' . $question->id . '/edit') }}">Edit question</a>
+    <a class="btn-warning btn" href="{{ url('question/' . $question->id . '/edit') }}">Edit question</a>
 </div>
 <br>
 <br>
@@ -52,6 +52,7 @@
                     <button data-url="{{ url('answer/' . $answer->id) }}" data-name="{{ $answer->answer }}" type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteAnswerModal">
                         Delete Answer
                     </button>
+                    <a class="btn-warning btn btn-sm" href="{{ url('answer/' . $answer->id . '/edit') }}">Edit answer</a>
                 </td>
             </tr>
             @endforeach

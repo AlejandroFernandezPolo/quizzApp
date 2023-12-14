@@ -102,9 +102,8 @@ class AnswerController extends Controller
      * @param  \App\Models\Answer  $answer
      * @return \Illuminate\Http\Response
      */
-    public function edit(Answer $answer)
-    {
-        //
+    public function edit(Answer $answer){
+        return view('answer.edit', ['answer' => $answer]);
     }
 
     /**
@@ -114,9 +113,20 @@ class AnswerController extends Controller
      * @param  \App\Models\Answer  $answer
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Answer $answer)
-    {
-        //
+    public function update(Request $request, Answer $answer){
+        try{
+            $existingCorrectAnswer = Answer::where('idquestion', $answer->idquestion)
+                ->where('correct', 1)
+                ->first();
+            if($existingCorrectAnswer != null && $request->correct && $existingCorrectAnswer->answer != $answer->answer){
+                return back() ->withInput() -> withErrors(['message' => 'There is already a correct answer to this question']);
+            }else{
+                $result = $answer->update($request->all());
+            }
+            return redirect('question') -> with(['message' => 'The answer has been updated.']);
+        } catch(\Exception $e) {
+            return back() ->withInput() -> withErrors(['message' => 'The answer has not been updated.']);
+        }
     }
 
     /**
@@ -129,7 +139,9 @@ class AnswerController extends Controller
     {
         try {
             $answer->delete();
-            return back()->with(['message' => 'The answer has been deleted.']);
+            $question = Question::where('id', $answer->idquestion)
+                ->first();
+            return view('question.show', ['question' => $question])->with(['message' => 'The answer has been deleted.']);
         } catch (\Exception $e) {
             dd($e->getMessage());
             return back()->withErrors(['message' => 'The answer has not been deleted.']);

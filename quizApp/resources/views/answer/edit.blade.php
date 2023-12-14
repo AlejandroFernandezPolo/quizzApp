@@ -4,39 +4,40 @@
 
 @section('content')
 
-@include('modal.deletequestion')
+@include('modal.deleteanswer')
 
-<form action="{{ url('question/' . $question->id) }}" method="post">
-
-    <!-- Solución de error por CSRF -->
-    <!--<input type="hidden" name="_method" value="post">-->
-    <!--<input type="hidden" name="_token" value="{{ csrf_token() }}">-->
+<form action="{{ url('answer/' . $answer->id) }}" method="post">
     @method('put')
     @csrf
 
-    <!-- Inputs del formulario -->
-    
     <div class="mb-3">
-        <label for="question" class="form-label">Question</label>
-        <input type="text" class="form-control" id="question" name="question" maxlength="200" required value="{{ old('question', $question->question) }}">
+        <label for="answer" class="form-label">Answer</label>
+        <input type="text" class="form-control" id="answer" name="answer" maxlength="200" required value="{{ old('answer', $answer->answer) }}">
+    </div>
+    <div class="mb-3">
+        <label for="correct">Is correct ?</label>
+        <select class="form-select" id="correct" name="correct" required>
+            <option value="1" {{ $answer->correct == '1' ? 'selected' : '' }} >Yes</option>
+            <option value="0" {{ $answer->correct == '0' ? 'selected' : '' }} >No</option>
+        </select>
     </div>
 
     <button type="submit" class="btn btn-success">Update</button>
-    <button id="deleteButton" data-url="{{ url('question/' . $question->id) }}" data-name="{{ $question->question }}" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteQuestionModal">
-        Link to delete v3
+    <button data-url="{{ url('answer/' . $answer->id) }}" data-name="{{ $answer->answer }}" type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteAnswerModal">
+        Delete Answer
     </button>
-                
+
 
 </form>
 
 <script>
-    // //solucion3
-     const deleteQuestionModal = document.getElementById('deleteQuestionModal');
-     const questionQuestion = document.getElementById('questionQuestion');
-     const formDelete = document.getElementById('formDelete');
-     deleteQuestionModal.addEventListener('show.bs.modal', event => {
-         questionQuestion.innerHTML = event.relatedTarget.dataset.name;
-         formDelete.action = event.relatedTarget.dataset.url;
-     });
+    // Listener para el modal de eliminación de respuestas
+    const deleteAnswerModal = document.getElementById('deleteAnswerModal');
+    const answerName = document.getElementById('answerName');
+    const formDeleteAnswer = document.getElementById('formDeleteAnswer');
+    deleteAnswerModal.addEventListener('show.bs.modal', event => {
+        answerName.innerHTML = event.relatedTarget.dataset.name;
+        formDeleteAnswer.action = event.relatedTarget.dataset.url;
+    });
 </script>
 @endsection
